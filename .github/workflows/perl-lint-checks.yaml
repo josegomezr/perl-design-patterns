@@ -1,5 +1,5 @@
 ---
-name: 'Perl Lint Checks'
+name: 'Linters'
 
 on:
   pull_request:
@@ -15,7 +15,7 @@ jobs:
       image: perldocker/perl-tester:5.26
     steps:
       - uses: actions/checkout@v4
-      - run: GITHUB_ACTIONS=1 ./tools/tidyall --check-only --all --quiet
+      - run: GITHUB_ACTIONS=1 tidyall --check-only --all --quiet
   perl-critic-checks:
     runs-on: ubuntu-latest
     name: "Perlcritic"
@@ -23,4 +23,4 @@ jobs:
       image: perldocker/perl-tester:5.26
     steps:
       - uses: actions/checkout@v4
-      - run: ./tools/perlcritic --quiet .
+      - run: perlcritic --quiet .

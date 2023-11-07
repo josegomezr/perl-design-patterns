@@ -1,6 +1,9 @@
 #!/usr/bin/env perl
 
+use strict;
+use warnings;
 use v5.26;
+
 use Test::Most;
 use Test::Warnings;
 
@@ -11,7 +14,7 @@ subtest 'Car - turn on' => sub {
   throws_ok { $car->turn_off() } qr/Can't turn off a car that's turned off!/, 'it cannot turn off!';
   isa_ok($car->state, 'PDP::State::TurnedOff', 'state did not changed');
 
-  throws_ok { $car->turn_on() } 'it can turn on!';
+  lives_ok { $car->turn_on() } 'it can turn on!';
   isa_ok($car->state, 'PDP::State::TurnedOn', 'state changed');
 };
 
