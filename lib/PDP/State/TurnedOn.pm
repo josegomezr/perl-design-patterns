@@ -6,7 +6,7 @@ use utf8;
 use feature ':5.26';
 use Carp qw(croak);
 
-use parent 'PDP::State::AbstractState';
+use parent 'PDP::State::BaseState';
 use PDP::State::TurnedOff;
 use PDP::State::Driving;
 

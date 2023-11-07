@@ -1,4 +1,4 @@
-package PDP::State::AbstractState;
+package PDP::State::BaseState;
 
 use strict;
 use warnings;

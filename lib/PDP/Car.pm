@@ -44,7 +44,7 @@ sub accelerate {
 }
 
 sub hit_breaks {
-  my ($self, $new_speed) = @_;
+  my ($self) = @_;
   $self->{speed} = 0;
   return $self;
 }
