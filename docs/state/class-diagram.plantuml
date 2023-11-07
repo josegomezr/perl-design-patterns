@@ -1,0 +1,67 @@
+@startuml
+hide empty members
+namespace PDP {
+  Car o-- State.BaseState
+
+  State.BaseState <|-- State.Driving
+  State.BaseState <|-- State.TurnedOff
+  State.BaseState <|-- State.TurnedOn
+
+  class Car {
+    {field} -state : BaseState
+    {field} -speed : number
+    {method} +state(state ?: BaseState) : void
+    {method} +speed(speed : number) : number
+    {method} +transition_to(new_state BaseState) : void
+    {method} +accelerate(new_speed : number) : void
+    {method} +hit_breaks() : void
+    ..
+    Below are the behaviors defined by each State will
+    The Actor here just forwards the call to the current state.
+    ..
+    {method} +turn_on() : void
+    {method} +turn_off() : void
+    {method} +drive() : void
+    {method} +park() : void
+  }
+
+  namespace State {
+    class BaseState {
+      {field} -context : Car
+      {method} +context(context Car) : Car
+      ..
+      Each state will define the behavior blow
+      ..
+      {abstract} {method} +can_transition_to(new_state : BaseState) : bool
+      {abstract} {method} +turn_on() : void
+      {abstract} {method} +turn_off() : void
+      {abstract} {method} +drive() : void
+      {abstract} {method} +park() : void
+    }
+
+    class Driving {
+      {method} +can_transition_to(new_state : BaseState) : bool
+      {method} +turn_on() : void
+      {method} +turn_off() : void
+      {method} +drive() : void
+      {method} +park() : void
+    }
+
+    class TurnedOff {
+      {method} +can_transition_to(new_state : BaseState) : bool
+      {method} +turn_on() : void
+      {method} +turn_off() : void
+      {method} +drive() : void
+      {method} +park() : void
+    }
+
+    class TurnedOn {
+      {method} +can_transition_to(new_state : BaseState) : bool
+      {method} +turn_on() : void
+      {method} +turn_off() : void
+      {method} +drive() : void
+      {method} +park() : void
+    }
+  }
+}
+@enduml
