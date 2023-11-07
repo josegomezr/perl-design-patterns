@@ -7,6 +7,9 @@ use feature ':5.26';
 use Carp qw(croak);
 use parent 'PDP::BaseClass';
 
+# Initial State
+use PDP::State::TurnedOff;
+
 # Copied from Mojo::Base
 sub new {
   my $class = shift;
