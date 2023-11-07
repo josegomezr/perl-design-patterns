@@ -1,0 +1,15 @@
+{
+    "problemMatcher": [
+        {
+            "owner": "perl",
+            "pattern": [
+                {
+                    "regexp": "^#\\s*(.+) at (.+) line (\\d+)\\.$",
+                    "message": 1,
+                    "file": 2,
+                    "line": 3
+                }
+            ]
+        }
+    ]
+}

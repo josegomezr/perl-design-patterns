@@ -1,0 +1,19 @@
+---
+name: 'Perl Testing Checks'
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  perl-prove:
+    runs-on: ubuntu-latest
+    name: "Prove"
+    container:
+      image: perldocker/perl-tester:5.26
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "::add-matcher::${GITHUB_WORKSPACE}/.github/perl-prove-matchers.json"
+      - run: PERL5LIB=$PWD/t/lib/:$PERL5LIB prove --formatter TAP::Formatter::GitHubAction
