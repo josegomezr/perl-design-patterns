@@ -1,12 +1,3 @@
-<!-- MarkdownTOC -->
-
-- State Pattern
-- UML Goodies
-  - State Diagram
-  - Class Diagram
-
-<!-- /MarkdownTOC -->
-
 State Pattern
 ===
 
@@ -17,18 +8,45 @@ its internal state changes. It appears as if the object changed its class.
 
 ---
 
-This implementation is a small State Machine representing a `Car` that can:
+Table of Contents
+===
+
+- [Implementation Details](#implementationddetails)
+- [UML Goodies](#uml-goodies)
+  - [State Diagram](#state-diagram)
+  - [Class Diagram](#class-diagram)
+
+---
+
+Implementation Details
+===
+
+A small State Machine representing a `Car` that can:
 
 * Turn on
 * Turn off
 * Drive
-  
     * Accelerate
     * Break
 
 Each State is represented by an _adjetive_ (e.g. `Driving`) and every transition
-as a **verb** (`park`, `drive`). I don't know if that's good or bad, but it
-works for my understanding of the pattern.
+as a **verb** (`park`, `drive`).
+
+<small>**Writer's Note:** _I don't know if that's good or bad, but it works for
+my understanding of the pattern._</small>
+
+The secret of this pattern is that the Actor (`Car`) shifts the logic of
+transitioning states to each state.
+
+Each state *must* define all transitions and block the ones that are invalid.
+
+**For example:** In our scenario _[also see the diagrams below]_, the rules
+  don't not allow for:
+
+  * `Car` drives when it's turned off: `State::TurnedOff` validates this.
+  * `Car` parks when it's turned off: `State::TurnedOff` validates this.
+  * `Car` drives when it's driving (double enter): `State::Driving` validates
+    this.
 
 UML Goodies
 ===
