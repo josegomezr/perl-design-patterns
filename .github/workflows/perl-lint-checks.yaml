@@ -1,5 +1,5 @@
 ---
-name: 'Perl Lint Checks'
+name: 'Linters'
 
 on:
   pull_request:
