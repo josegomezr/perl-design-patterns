@@ -13,24 +13,27 @@ sub can_transition_to {
   return 1 if $new_state->isa('PDP::State::TurnedOn');
 }
 
-sub turn_on {
-  croak "Can't turn on a car that's turned driving!";
-}
-
-sub turn_off {
-  croak "Can't turn off a car that's driving!";
-}
-
-sub drive {
-  croak "Can't drive a car that's already driving!";
-}
-
 sub park {
   my ($self) = @_;
   my $new_state = PDP::State::TurnedOn->new();
 
   # Turning on!
   $self->context->transition_to($new_state);
+}
+
+sub turn_off {
+  my $self = shift;
+  $self->_not_possible_error(@_);
+}
+
+sub turn_on {
+  my $self = shift;
+  $self->_not_possible_error(@_);
+}
+
+sub drive {
+  my $self = shift;
+  $self->_not_possible_error(@_);
 }
 
 1;

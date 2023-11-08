@@ -22,15 +22,18 @@ sub turn_on {
 }
 
 sub turn_off {
-  croak "Can't turn off a car that's turned off!";
+  my $self = shift;
+  $self->_not_possible_error(@_);
 }
 
 sub drive {
-  croak "Can't drive a car that's turned off!";
+  my $self = shift;
+  $self->_not_possible_error(@_);
 }
 
 sub park {
-  croak "Can't park a car that's turned off!";
+  my $self = shift;
+  $self->_not_possible_error(@_);
 }
 
 1;

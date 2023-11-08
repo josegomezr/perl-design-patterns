@@ -8,14 +8,18 @@ use Carp qw(croak);
 use parent 'PDP::BaseClass';
 
 # Initial State
-use PDP::State::TurnedOff;
+use PDP::State::TurnedOff ();
 
 # Copied from Mojo::Base
 sub new {
   my $class = shift;
   my $self = $class->SUPER::new(@_);
+  # Default Attributes
   $self->{speed} //= 0;
-  $self->{state} //= PDP::State::TurnedOff->new()->context($self);
+  # Default State
+  $self->{state} //= PDP::State::TurnedOff->new();
+  # Feed the context to the state.
+  $self->{state}->context($self);
   return $self;
 }
 

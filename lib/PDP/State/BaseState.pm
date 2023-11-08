@@ -7,6 +7,17 @@ use feature ':5.26';
 use Carp qw(croak);
 use parent 'PDP::BaseClass';
 
+our @EXPORT = qw(context can_transition_to turn_on turn_off drive park);
+
+sub _not_possible_error {
+  my ($self) = @_;
+  my ($caller_name, $caller_path, $caller_line, $sub_name) = caller(1);
+
+  $sub_name =~ s/^.*::(.+)$/$1/;
+
+  croak sprintf("cannot %s in %s", $sub_name, ref $self);
+}
+
 sub context {
   my $self = shift;
 
@@ -19,23 +30,28 @@ sub context {
 }
 
 sub can_transition_to {
-  croak 'Method "can_transition_to" not implemented by subclass';
+  my $self = shift;
+  $self->_not_implemented_error(@_);
 }
 
 sub turn_on {
-  croak 'Method "turn_on" not implemented by subclass';
+  my $self = shift;
+  $self->_not_implemented_error(@_);
 }
 
 sub turn_off {
-  croak 'Method "turn_off" not implemented by subclass';
+  my $self = shift;
+  $self->_not_implemented_error(@_);
 }
 
 sub drive {
-  croak 'Method "drive" not implemented by subclass';
+  my $self = shift;
+  $self->_not_implemented_error(@_);
 }
 
 sub park {
-  croak 'Method "park" not implemented by subclass';
+  my $self = shift;
+  $self->_not_implemented_error(@_);
 }
 
 1;

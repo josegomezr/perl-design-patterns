@@ -15,10 +15,6 @@ sub can_transition_to {
   return 1 if grep { $new_state->isa($_) } ('PDP::State::TurnedOff', 'PDP::State::Driving');
 }
 
-sub turn_on {
-  croak "Can't turn on a car that's turned on!";
-}
-
 sub turn_off {
   my ($self) = @_;
 
@@ -36,8 +32,14 @@ sub drive {
   $self->context->transition_to($new_state);
 }
 
+sub turn_on {
+  my $self = shift;
+  $self->_not_possible_error(@_);
+}
+
 sub park {
-  croak "Can't park a car that's turned on!";
+  my $self = shift;
+  $self->_not_possible_error(@_);
 }
 
 1;
