@@ -21,7 +21,7 @@ my @states = qw(
 
 # Define here all methods for states & actors.
 my @common_interface_methods = qw(
-  turn_on turn_off drive park
+  turn_on turn_off drive park accelerate hit_breaks
 );
 
 my @state_methods = ('can_transition_to', @common_interface_methods);
@@ -43,7 +43,7 @@ subtest 'Base State Interface' => sub {
   }
 };
 
-subtest 'Car - turn on' => sub {
+subtest 'Car - Inital State: Turned Off' => sub {
   {
     my $car = PDP::Car->new();
     throws_ok {
@@ -70,13 +70,23 @@ subtest 'Car - turn on' => sub {
 
   {
     my $car = PDP::Car->new();
-    lives_ok {
-      $car->turn_on();
-    } 'it can turn on!';
-    isa_ok($car->state, 'PDP::State::TurnedOn', 'state changed');
+    throws_ok {
+      $car->accelerate();
+    } qr/cannot accelerate in PDP::State::TurnedOff/, 'it cannot accelerate!';
+    isa_ok($car->state, 'PDP::State::TurnedOff', 'state did not change');
+  }
+
+  {
+    my $car = PDP::Car->new();
+    throws_ok {
+      $car->hit_breaks();
+    } qr/cannot hit_breaks in PDP::State::TurnedOff/, 'it cannot hit_breaks!';
+    isa_ok($car->state, 'PDP::State::TurnedOff', 'state did not change');
   }
 
 };
+done_testing();
+exit;
 
 subtest 'Car - turn off' => sub {
   {
@@ -110,6 +120,23 @@ subtest 'Car - turn off' => sub {
     } 'it can turn off!';
     isa_ok($car->state, 'PDP::State::TurnedOff', 'state changed');
   }
+
+  {
+    my $car = PDP::Car->new(state => PDP::State::TurnedOn->new());
+    throws_ok {
+      $car->accelerate();
+    } qr/cannot accelerate in PDP::TurnedOn::Driving/, 'it cannot accelerate!';
+    isa_ok($car->state, 'PDP::State::TurnedOn', 'state did not change');
+  }
+
+  {
+    my $car = PDP::Car->new(state => PDP::State::TurnedOn->new());
+    throws_ok {
+      $car->hit_breaks();
+    } qr/cannot hit_breaks in PDP::TurnedOn::Driving/, 'it cannot hit_breaks!';
+    isa_ok($car->state, 'PDP::State::TurnedOn', 'state did not change');
+  }
+
 };
 
 subtest 'Car - drive' => sub {
@@ -151,6 +178,14 @@ subtest 'Car - drive' => sub {
       $car->accelerate(10);
     } 'it can accelerate!';
     isa_ok($car->state, 'PDP::State::Driving', 'state did not change');
+  }
+
+  {
+    my $car = PDP::Car->new(state => PDP::State::TurnedOn->new());
+    throws_ok {
+      $car->hit_breaks();
+    } 'it can hit_breaks!';
+    isa_ok($car->state, 'PDP::State::TurnedOn', 'state did not change');
   }
 };
 

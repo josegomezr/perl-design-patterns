@@ -7,8 +7,8 @@ use feature ':5.26';
 use Carp qw(croak);
 
 use parent 'PDP::State::BaseState';
-use PDP::State::TurnedOff;
-use PDP::State::Driving;
+use PDP::State::TurnedOff ();
+use PDP::State::Driving ();
 
 sub can_transition_to {
   my ($self, $new_state) = @_;
@@ -24,6 +24,16 @@ sub turn_off {
   $self->context->transition_to($new_state);
 }
 
+sub turn_on {
+  my $self = shift;
+  $self->_not_possible_error(@_);
+}
+
+sub turn_off {
+  my $self = shift;
+  $self->_not_possible_error(@_);
+}
+
 sub drive {
   my ($self) = @_;
   my $new_state = PDP::State::Driving->new();
@@ -32,14 +42,16 @@ sub drive {
   $self->context->transition_to($new_state);
 }
 
-sub turn_on {
-  my $self = shift;
+sub accelerate {
+  my ($self, $new_speed) = @_;
   $self->_not_possible_error(@_);
+  return $self;
 }
 
-sub park {
-  my $self = shift;
+sub hit_breaks {
+  my ($self) = @_;
   $self->_not_possible_error(@_);
+  return $self;
 }
 
 1;

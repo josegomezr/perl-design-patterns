@@ -54,4 +54,14 @@ sub park {
   $self->_not_implemented_error(@_);
 }
 
+sub accelerate {
+  my ($self, $new_speed) = @_;
+  $self->_not_implemented_error(@_);
+}
+
+sub hit_breaks {
+  my ($self) = @_;
+  $self->_not_implemented_error(@_);
+}
+
 1;

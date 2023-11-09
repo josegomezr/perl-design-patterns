@@ -6,7 +6,7 @@ use utf8;
 use feature ':5.26';
 use Carp qw(croak);
 use parent 'PDP::State::BaseState';
-use PDP::State::TurnedOn;
+use PDP::State::TurnedOn ();
 
 sub can_transition_to {
   my ($self, $new_state) = @_;
@@ -17,8 +17,20 @@ sub park {
   my ($self) = @_;
   my $new_state = PDP::State::TurnedOn->new();
 
-  # Turning on!
+  # Stopping
   $self->context->transition_to($new_state);
+}
+
+sub accelerate {
+  my ($self, $new_speed) = @_;
+  $self->context->speed($self->context->speed + $new_speed);
+  return $self;
+}
+
+sub hit_breaks {
+  my ($self) = @_;
+  $self->context->speed(0);
+  return $self;
 }
 
 sub turn_off {
@@ -35,5 +47,6 @@ sub drive {
   my $self = shift;
   $self->_not_possible_error(@_);
 }
+
 
 1;
