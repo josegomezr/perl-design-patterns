@@ -1,7 +1,8 @@
 @startuml
 hide empty members
+
 namespace PDP {
-  Car o-- State.BaseState
+  Car *-- State.BaseState
 
   State.BaseState <|-- State.Driving
   State.BaseState <|-- State.TurnedOff
@@ -13,12 +14,12 @@ namespace PDP {
     {method} +state(state ?: BaseState) : void
     {method} +speed(speed : number) : number
     {method} +transition_to(new_state BaseState) : void
-    {method} +accelerate(new_speed : number) : void
-    {method} +hit_breaks() : void
     ..
     Below are the behaviors defined by each State will
     The Actor here just forwards the call to the current state.
     ..
+    {method} +accelerate(new_speed : number) : void
+    {method} +hit_breaks() : void
     {method} +turn_on() : void
     {method} +turn_off() : void
     {method} +drive() : void
@@ -32,6 +33,8 @@ namespace PDP {
       ..
       Each state will define the behavior blow
       ..
+      {abstract} {method} +accelerate(new_speed : number) : void
+      {abstract} {method} +hit_breaks() : void
       {abstract} {method} +can_transition_to(new_state : BaseState) : bool
       {abstract} {method} +turn_on() : void
       {abstract} {method} +turn_off() : void
@@ -41,6 +44,8 @@ namespace PDP {
 
     class Driving {
       {method} +can_transition_to(new_state : BaseState) : bool
+      {method} +accelerate(new_speed : number) : void
+      {method} +hit_breaks() : void
       {method} +turn_on() : void
       {method} +turn_off() : void
       {method} +drive() : void
@@ -48,6 +53,8 @@ namespace PDP {
     }
 
     class TurnedOff {
+      {method} +accelerate(new_speed : number) : void
+      {method} +hit_breaks() : void
       {method} +can_transition_to(new_state : BaseState) : bool
       {method} +turn_on() : void
       {method} +turn_off() : void
@@ -56,6 +63,8 @@ namespace PDP {
     }
 
     class TurnedOn {
+      {method} +accelerate(new_speed : number) : void
+      {method} +hit_breaks() : void
       {method} +can_transition_to(new_state : BaseState) : bool
       {method} +turn_on() : void
       {method} +turn_off() : void
