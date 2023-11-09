@@ -119,7 +119,7 @@ A state object implementing C<PDP::State::BaseClass>.
 
 sub speed {
   my ($self) = @_;
-  
+
   if (my $speed = shift) {
     $self->{speed} = $speed;
     return $self;
@@ -188,7 +188,7 @@ Accelerates the car (increase speed) to C<new_speed>.
 
 sub accelerate {
   my ($self, $new_speed) = @_;
-  return $self->state->turn_off($new_speed);
+  return $self->state->accelerate($new_speed);
 }
 
 =head2 hit_breaks

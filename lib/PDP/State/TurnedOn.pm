@@ -29,11 +29,6 @@ sub turn_on {
   $self->_not_possible_error(@_);
 }
 
-sub turn_off {
-  my $self = shift;
-  $self->_not_possible_error(@_);
-}
-
 sub drive {
   my ($self) = @_;
   my $new_state = PDP::State::Driving->new();
