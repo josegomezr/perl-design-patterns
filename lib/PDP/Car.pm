@@ -36,7 +36,7 @@ PDP::Car - A minimal example of the State design pattern.
 
 =head1 DESCRIPTION
 
-L<PDP::Car> is a class representing simple state machine. As shown below:
+C<PDP::Car> is a class representing simple state machine. As shown below:
 
 
            x-------[turn off]-------x                  x--[accelerate]--x
@@ -62,8 +62,8 @@ use PDP::State::TurnedOff ();
 
 =head1 CONSTRUCTORS
 
-L<PDP::Car> implements a simple constructor that accepts a hash of properties.
-
+C<PDP::Car> inherits from L<PDP::BaseClass> and implements default values for
+C<state> & C<speed>.
 
 =head2 new
 
