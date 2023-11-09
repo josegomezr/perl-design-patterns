@@ -1,3 +1,15 @@
+/**
+ * This is all cursed code I just janked off plant-uml to encode the zopfli
+ * compression result of each *.plantuml diagram into a URL-safe encoding they
+ * use.
+ * 
+ * No clue how it works, all I know is you need `zoplfi` (zypper in zopfli),
+ * and:
+ * 
+ * zopfli $diagram_source --deflate -c > $tmp
+ * node tools/encode-plant-uml.js $tmp # prints the encoded result
+ * 
+ */
 const fs = require('fs');
 
 function encode64_(e) {
