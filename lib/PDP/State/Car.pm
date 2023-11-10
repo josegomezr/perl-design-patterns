@@ -1,4 +1,4 @@
-package PDP::Car;
+package PDP::State::Car;
 
 =encoding utf8
 
@@ -58,7 +58,7 @@ use Carp qw(croak);
 use parent 'PDP::BaseClass';
 
 # Initial State
-use PDP::State::TurnedOff ();
+use PDP::State::CarState::TurnedOff ();
 
 =head1 CONSTRUCTORS
 
@@ -89,7 +89,7 @@ sub new {
   # Default Attributes
   $self->{speed} //= 0;
   # Default State
-  $self->{state} //= PDP::State::TurnedOff->new();
+  $self->{state} //= PDP::State::CarState::TurnedOff->new();
   # Feed the context to the state.
   $self->{state}->context($self);
   return $self;
@@ -102,18 +102,13 @@ All I<Attribute Accessors> here follow the fluent interface, when called without
 a value they behave as a getter, when providing a value they behave as a
 setter.
 
+=over 1
+
+=back
 
 =head2 speed
 
 The speed of the car.
-
-=head2 state
-
-A state object implementing C<PDP::State::BaseClass>.
-
-=over 1
-
-=back
 
 =cut
 
@@ -127,6 +122,12 @@ sub speed {
 
   return $self->{speed};
 }
+
+=head2 state
+
+A state object implementing C<PDP::State::CarState::Base>.
+
+=cut
 
 sub state {
   my $self = shift;
@@ -155,7 +156,7 @@ invalid. It's the closest thing to an exception I know so far.
 
 =item state
 
-A state object implementing C<PDP::State::BaseClass>.
+A state object implementing C<PDP::State::CarState::Base>.
 
 =back
 =cut
@@ -180,9 +181,18 @@ but implemented in the state.
 Each state will execute the appropriate action and transition to a next state if
 applicable or die otherwise.
 
+
 =head2 accelerate(new_speed)
 
-Accelerates the car (increase speed) to C<new_speed>.
+Accelerates the car (increase speed).
+
+=over 2
+
+=item new_speed
+
+Integer: new speed of the car.
+
+=back
 
 =cut
 
@@ -191,7 +201,7 @@ sub accelerate {
   return $self->state->accelerate($new_speed);
 }
 
-=head2 hit_breaks
+=head2 hit_breaks()
 
 Breaks the car (set speed to 0) to C<new_speed>.
 
@@ -204,7 +214,7 @@ sub hit_breaks {
   return $self->state->hit_breaks();
 }
 
-=head2 turn_on
+=head2 turn_on()
 
 Turns on the car
 
@@ -215,7 +225,7 @@ sub turn_on {
   return $self->state->turn_on();
 }
 
-=head2 turn_off
+=head2 turn_off()
 
 Turns off the car
 
@@ -227,7 +237,7 @@ sub turn_off {
   return $self->state->turn_off();
 }
 
-=head2 drive
+=head2 drive()
 
 Puts the car in B<DRIVE>
 
@@ -238,7 +248,7 @@ sub drive {
   return $self->state->drive();
 }
 
-=head2 park
+=head2 park()
 
 Parks the car.
 

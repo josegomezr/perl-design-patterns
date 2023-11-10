@@ -1,19 +1,20 @@
 @startuml
 hide empty members
 
-namespace PDP {
-  Car *-- State.BaseState
+namespace PDP::State {
+  Car *-- CarState.Base
 
-  State.BaseState <|-- State.Driving
-  State.BaseState <|-- State.TurnedOff
-  State.BaseState <|-- State.TurnedOn
+  BaseState <|-- CarState.Base
+  CarState.Base <|-- CarState.Driving
+  CarState.Base <|-- CarState.TurnedOff
+  CarState.Base <|-- CarState.TurnedOn
 
   class Car {
     {field} -state : BaseState
     {field} -speed : number
-    {method} +state(state ?: BaseState) : void
+    {method} +state(state ?: CarState.Base) : void
     {method} +speed(speed : number) : number
-    {method} +transition_to(new_state BaseState) : void
+    {method} +transition_to(new_state : CarState.Base) : void
     ..
     Below are the behaviors defined by each State will
     The Actor here just forwards the call to the current state.
@@ -26,16 +27,24 @@ namespace PDP {
     {method} +park() : void
   }
 
-  namespace State {
-    class BaseState {
-      {field} -context : Car
-      {method} +context(context Car) : Car
+  abstract class BaseState {
+    {field} -context : Any
+    {method} +context(context Any) : Any
+    {abstract} {method} +can_transition_to(new_state : BaseState) : bool
+  }
+
+  note right of BaseState::can_transition_to
+    Is up to each concrete state to define the rules for
+    transition with 'can_transition_to'.
+  end note
+
+  namespace CarState {
+    abstract class Base {
       ..
-      Each state will define the behavior blow
+      These are the Actor Methods that each state will handle.
       ..
       {abstract} {method} +accelerate(new_speed : number) : void
       {abstract} {method} +hit_breaks() : void
-      {abstract} {method} +can_transition_to(new_state : BaseState) : bool
       {abstract} {method} +turn_on() : void
       {abstract} {method} +turn_off() : void
       {abstract} {method} +drive() : void
@@ -43,7 +52,7 @@ namespace PDP {
     }
 
     class Driving {
-      {method} +can_transition_to(new_state : BaseState) : bool
+      {method} +can_transition_to(new_state : Base) : bool
       {method} +accelerate(new_speed : number) : void
       {method} +hit_breaks() : void
       {method} +turn_on() : void
@@ -53,9 +62,9 @@ namespace PDP {
     }
 
     class TurnedOff {
+      {method} +can_transition_to(new_state : Base) : bool
       {method} +accelerate(new_speed : number) : void
       {method} +hit_breaks() : void
-      {method} +can_transition_to(new_state : BaseState) : bool
       {method} +turn_on() : void
       {method} +turn_off() : void
       {method} +drive() : void
@@ -63,9 +72,9 @@ namespace PDP {
     }
 
     class TurnedOn {
+      {method} +can_transition_to(new_state : Base) : bool
       {method} +accelerate(new_speed : number) : void
       {method} +hit_breaks() : void
-      {method} +can_transition_to(new_state : BaseState) : bool
       {method} +turn_on() : void
       {method} +turn_off() : void
       {method} +drive() : void

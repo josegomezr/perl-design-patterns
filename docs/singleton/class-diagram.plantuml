@@ -1,0 +1,28 @@
+@startuml
+namespace PDP::Singleton {
+  Book --> Connection
+
+  class Book {
+    - _db : Connection
+    + save_in_db() : void
+    + delete_in_db() : void
+  }
+  note right of Book::_db
+    Just an alias to save up
+    characters in the code
+  end note
+
+  class Connection {
+    - instance : Connection
+    ..
+    Private Constructor
+    ..
+    - Connection()
+    --
+    {static} + get_instance() : Connection
+    {static} + save() : void
+    {static} + delete() : void
+    {static} + reset() : void
+  }
+}
+@enduml

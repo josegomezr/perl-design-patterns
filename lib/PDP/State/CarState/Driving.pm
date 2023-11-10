@@ -1,21 +1,21 @@
-package PDP::State::Driving;
+package PDP::State::CarState::Driving;
 
 use strict;
 use warnings;
 use utf8;
 use feature ':5.26';
 use Carp qw(croak);
-use parent 'PDP::State::BaseState';
-use PDP::State::TurnedOn ();
+use parent 'PDP::State::CarState::Base';
+use PDP::State::CarState::TurnedOn ();
 
 sub can_transition_to {
   my ($self, $new_state) = @_;
-  return 1 if $new_state->isa('PDP::State::TurnedOn');
+  return 1 if $new_state->isa('PDP::State::CarState::TurnedOn');
 }
 
 sub park {
   my ($self) = @_;
-  my $new_state = PDP::State::TurnedOn->new();
+  my $new_state = PDP::State::CarState::TurnedOn->new();
 
   # Stopping
   $self->context->transition_to($new_state);
