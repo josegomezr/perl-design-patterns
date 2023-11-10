@@ -61,7 +61,7 @@ sub new {
 =head2 _not_implemented_error
 
 It's a dumb equivalent to C<raise NotImplementedError> (or equivalent in your
-language of choice.
+language of choice).
 
 =cut
 
