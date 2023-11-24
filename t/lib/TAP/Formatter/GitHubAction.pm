@@ -24,7 +24,7 @@ sub open_test {
     my $result = shift;
 
     # on every "failed test", start a new buffer.
-    push (@{$parser->{_fail_msgs}}, '') if $result->raw =~ /Failed test/;
+    push(@{$parser->{_fail_msgs}}, '') if $result->raw =~ /Failed test/;
 
     # Don't save the last message, it's useless.
     return if $result->raw =~ /Looks like/;
@@ -41,15 +41,13 @@ sub open_test {
 
 sub summary {
   my ($self, $aggregate, $interrupted) = @_;
-  
+
   $self->SUPER::summary($aggregate, $interrupted);
 
   my $total = $aggregate->total;
   my $passed = $aggregate->passed;
 
-  if ($total == $passed && !$aggregate->has_problems) {
-    return;
-  }
+  return if ($total == $passed && !$aggregate->has_problems);
 
   for my $test ($aggregate->descriptions) {
     my ($parser) = $aggregate->parsers($test);
@@ -57,8 +55,12 @@ sub summary {
     next if $parser->passed == $parser->tests_run && !$parser->exit;
 
     my $failures_per_line = {};
-    for my $line (@{$parser->{_fail_msgs}}){
+    # First pass, aggregate errors in the same line into a single error.
+    # This is mostly cosmetic not to spam the UI that hard.
+    for my $line (@{$parser->{_fail_msgs}}) {
+      # Skip anything that doesn't look like our TRIPHASIC REGEX
       next unless $line =~ qr/$TRIPHASIC_REGEX/m;
+      # Extract all variables
       my ($line, $fail_message, $context_msg) = ($+{line}, $+{test_name} // 'fail test', $+{context_msg});
       $failures_per_line->{$line} //= ();
 
@@ -69,21 +71,21 @@ sub summary {
 
       $fail_message = "- $fail_message";
       if ($context_msg) {
-        # Indent 
+        # Indent
         $context_msg =~ s/^/    /gm;
         # Encode all newlines
         $context_msg =~ s/\n/%0A/g;
-
+        # Render a block
         $fail_message .= "%0A    --- START OF CONTEXT ---";
         $fail_message .= "%0A$context_msg";
         $fail_message .= "%0A    --- END OF CONTEXT ---";
       }
-      
 
-      push (@{$failures_per_line->{$line}}, $fail_message);
+      push(@{$failures_per_line->{$line}}, $fail_message);
     }
 
-    for my $line (keys %$failures_per_line){
+    # Second pass: Print the aggregations
+    for my $line (keys %$failures_per_line) {
       my $message = join("%0A%0A", @{$failures_per_line->{$line}});
 
       my $log_line = sprintf(
