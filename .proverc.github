@@ -1,0 +1,4 @@
+--lib
+-I t/lib
+--formatter TAP::Formatter::GitHubAction
+--merge

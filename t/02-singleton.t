@@ -107,7 +107,7 @@ subtest 'Save + Delete a Book' => sub {
   ok(is_deeply($through_instance, [1, 0]), 'calls do not match');
   ok(is_deeply($direct, $through_instance), 'calls do not match');
 
-  lives_ok { die 'lol'; $book->delete_in_db() } 'delete failed';
+  lives_ok { $book->delete_in_db() } 'delete failed';
 
   $direct = PDP::Singleton::Connection->calls();
   $through_instance = PDP::Singleton::Connection->get_instance->calls();
