@@ -5,7 +5,7 @@ use warnings;
 use base 'TAP::Formatter::File';
 
 # My file, my terms.
-my $TRIPHASIC_REGEX = qr/\s*Failed test( '(?<test_name>[^']+)'\n\s*#\s+)? at (?<filename>.+) line (?<line>\d+)/;
+my $TRIPHASIC_REGEX = qr/\s*Failed test( '(?<test_name>[^']+)'\n\s*#\s+)? at (?<filename>.+) line (?<line>\d+)\.\n(?<context_msg>[\w\W]*)/;
 
 sub open_test {
   my ($self, $description, $parser) = @_;
@@ -28,6 +28,7 @@ sub open_test {
 
     # Don't save the last message, it's useless.
     return if $result->raw =~ /Looks like/;
+    return unless $result->raw =~ /^\s*#/;
     # save the message.
     $parser->{_fail_msgs}[-1] .= $result->raw . "\n";
   };
@@ -58,14 +59,27 @@ sub summary {
     my $failures_per_line = {};
     for my $line (@{$parser->{_fail_msgs}}){
       next unless $line =~ qr/$TRIPHASIC_REGEX/m;
-      my ($line, $fail_message) = ($+{line}, $+{test_name} // 'fail test');
+      my ($line, $fail_message, $context_msg) = ($+{line}, $+{test_name} // 'fail test', $+{context_msg});
+
+      chomp($context_msg);
+      $context_msg =~ s/^\s*/    /gm;
+      $context_msg =~ s/\n/%0A/g;
+
       $failures_per_line->{$line} //= ();
+
+      $fail_message = "- $fail_message";
+      if ($context_msg) {
+        $fail_message .= "%0A    --- START OF CONTEXT ---";
+        $fail_message .= "%0A$context_msg";
+        $fail_message .= "%0A    --- END OF CONTEXT ---";
+      }
+      
 
       push (@{$failures_per_line->{$line}}, $fail_message);
     }
 
     for my $line (keys %$failures_per_line){
-      my $message = join("%0A", map { "- $_" } @{$failures_per_line->{$line}});
+      my $message = join("%0A", @{$failures_per_line->{$line}});
 
       my $log_line = sprintf(
         "::error file=%s,line=%s,title=Failed Tests::%s",
