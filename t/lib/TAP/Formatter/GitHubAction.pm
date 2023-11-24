@@ -19,9 +19,10 @@ sub open_test {
 
   # In an ideal world, we'd just need to listen to `comment` and that should
   # suffice, but `throws_ok` & `lives_ok` report via `unknown`...
-  # So we'll capture simply all output and regex filter later.
-  $parser->callback(ALL => sub {
+  # But this is real life...
+  my $handler = sub {
     my $result = shift;
+
     # on every "failed test", start a new buffer.
     push (@{$parser->{_fail_msgs}}, '') if $result->raw =~ /Failed test/;
 
@@ -29,7 +30,10 @@ sub open_test {
     return if $result->raw =~ /Looks like/;
     # save the message.
     $parser->{_fail_msgs}[-1] .= $result->raw . "\n";
-  });
+  };
+
+  $parser->callback(comment => $handler);
+  $parser->callback(unknown => $handler);
 
   return $session;
 }
@@ -51,11 +55,22 @@ sub summary {
 
     next if $parser->passed == $parser->tests_run && !$parser->exit;
 
+    my $failures_per_line = {};
     for my $line (@{$parser->{_fail_msgs}}){
       next unless $line =~ qr/$TRIPHASIC_REGEX/m;
-      my ($line, $fail_message) = ($+{line}, $+{test_name} // 'failed test');
-      
-      my $log_line = sprintf("::error file=%s,line=%s::%s", $test, $line, $fail_message);
+      my ($line, $fail_message) = ($+{line}, $+{test_name} // 'fail test');
+      $failures_per_line->{$line} //= ();
+
+      push (@{$failures_per_line->{$line}}, $fail_message);
+    }
+
+    for my $line (keys %$failures_per_line){
+      my $message = join("%0A", map { "- $_" } @{$failures_per_line->{$line}});
+
+      my $log_line = sprintf(
+        "::error file=%s,line=%s,title=Failed Tests::%s",
+        $test, $line, $message
+      );
       $self->_output("$log_line\n");
     }
   }
