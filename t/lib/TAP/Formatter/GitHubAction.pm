@@ -4,8 +4,39 @@ use strict;
 use warnings;
 use base 'TAP::Formatter::File';
 
+# My file, my terms.
+my $TRIPHASIC_REGEX = qr/\s*Failed test( '(?<test_name>[^']+)'\n\s*#\s+)? at (?<filename>.+) line (?<line>\d+)/;
+
+sub open_test {
+  my ($self, $description, $parser) = @_;
+  my $session = $self->SUPER::open_test($description, $parser);
+
+  # We'll use the parser as a vessel, afaics there's one parser instance per
+  # parallel job.
+
+  # We'll keep track of all output of a test with this.
+  $parser->{_fail_msgs} = [''];
+
+  # In an ideal world, we'd just need to listen to `comment` and that should
+  # suffice, but `throws_ok` & `lives_ok` report via `unknown`...
+  # So we'll capture simply all output and regex filter later.
+  $parser->callback(ALL => sub {
+    my $result = shift;
+    # on every "failed test", start a new buffer.
+    push (@{$parser->{_fail_msgs}}, '') if $result->raw =~ /Failed test/;
+
+    # Don't save the last message, it's useless.
+    return if $result->raw =~ /Looks like/;
+    # save the message.
+    $parser->{_fail_msgs}[-1] .= $result->raw . "\n";
+  });
+
+  return $session;
+}
+
 sub summary {
   my ($self, $aggregate, $interrupted) = @_;
+  
   $self->SUPER::summary($aggregate, $interrupted);
 
   my $total = $aggregate->total;
@@ -20,23 +51,13 @@ sub summary {
 
     next if $parser->passed == $parser->tests_run && !$parser->exit;
 
-    my $log_line = sprintf("::error file=%s,title=Testcase failed::Tests: %s", $test, $parser->tests_run);
-
-    if (scalar $parser->failed > 0) {
-      $log_line .= sprintf(' -- Failed: %s', scalar $parser->failed);
+    for my $line (@{$parser->{_fail_msgs}}){
+      next unless $line =~ qr/$TRIPHASIC_REGEX/m;
+      my ($line, $fail_message) = ($+{line}, $+{test_name} // 'failed test');
+      
+      my $log_line = sprintf("::error file=%s,line=%s::%s", $test, $line, $fail_message);
+      $self->_output("$log_line\n");
     }
-
-    if (scalar $parser->todo_passed > 0) {
-      $log_line .= sprintf(' -- TODO: %s', scalar $parser->todo_passed);
-    }
-
-    if (scalar $parser->parse_errors > 0) {
-      $log_line .= sprintf(' -- Parse Error: %s', scalar $parser->parse_errors);
-    }
-
-    $log_line .= ' -- See the logs for more details';
-
-    $self->_output("$log_line\n");
   }
 }
 

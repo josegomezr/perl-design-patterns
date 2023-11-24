@@ -15,4 +15,4 @@ jobs:
       image: perldocker/perl-tester:5.26
     steps:
       - uses: actions/checkout@v4
-      - run: PERL5LIB=$PWD/t/lib/:$PERL5LIB prove --formatter TAP::Formatter::GitHubAction
+      - run: PERL5LIB=$PWD/t/lib/:$PERL5LIB prove --formatter TAP::Formatter::GitHubAction --merge -j $(nproc)
