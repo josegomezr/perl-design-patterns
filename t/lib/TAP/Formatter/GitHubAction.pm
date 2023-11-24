@@ -87,11 +87,10 @@ sub summary {
         # Indent
         $context_msg =~ s/^/    /gm;
         # Encode all newlines
-        $context_msg =~ s/\n/%0A/g;
         # Render a block
-        $fail_message .= "%0A    --- START OF CONTEXT ---";
-        $fail_message .= "%0A$context_msg";
-        $fail_message .= "%0A    --- END OF CONTEXT ---";
+        $fail_message .= "\n--- CAPTURED CONTEXT ---";
+        $fail_message .= "\n$context_msg";
+        $fail_message .= "\n---  END OF CONTEXT  ---";
       }
 
       push(@{$failures_per_line->{$line}}, $fail_message);
@@ -100,6 +99,7 @@ sub summary {
     # Second pass: Print the aggregations
     for my $line (keys %$failures_per_line) {
       my $message = join("%0A%0A", @{$failures_per_line->{$line}});
+      $message =~ s/\n/%0A/g;
 
       my $log_line = sprintf(
         "::error file=%s,line=%s,title=Failed Tests::%s",
