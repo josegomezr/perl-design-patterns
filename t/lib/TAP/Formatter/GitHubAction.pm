@@ -60,15 +60,20 @@ sub summary {
     for my $line (@{$parser->{_fail_msgs}}){
       next unless $line =~ qr/$TRIPHASIC_REGEX/m;
       my ($line, $fail_message, $context_msg) = ($+{line}, $+{test_name} // 'fail test', $+{context_msg});
-
-      chomp($context_msg);
-      $context_msg =~ s/^\s*/    /gm;
-      $context_msg =~ s/\n/%0A/g;
-
       $failures_per_line->{$line} //= ();
+
+      # Eat up any trailing whitespace
+      chomp($context_msg);
+      # Remove indentation before the #
+      $context_msg =~ s/^\s*//gm;
 
       $fail_message = "- $fail_message";
       if ($context_msg) {
+        # Indent 
+        $context_msg =~ s/^/    /gm;
+        # Encode all newlines
+        $context_msg =~ s/\n/%0A/g;
+
         $fail_message .= "%0A    --- START OF CONTEXT ---";
         $fail_message .= "%0A$context_msg";
         $fail_message .= "%0A    --- END OF CONTEXT ---";
@@ -79,7 +84,7 @@ sub summary {
     }
 
     for my $line (keys %$failures_per_line){
-      my $message = join("%0A", @{$failures_per_line->{$line}});
+      my $message = join("%0A%0A", @{$failures_per_line->{$line}});
 
       my $log_line = sprintf(
         "::error file=%s,line=%s,title=Failed Tests::%s",
