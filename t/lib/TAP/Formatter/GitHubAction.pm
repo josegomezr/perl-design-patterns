@@ -5,7 +5,20 @@ use warnings;
 use base 'TAP::Formatter::File';
 
 # My file, my terms.
-my $TRIPHASIC_REGEX = qr/\s*Failed test( '(?<test_name>[^']+)'\n\s*#\s+)? at (?<filename>.+) line (?<line>\d+)\.\n(?<context_msg>[\w\W]*)/;
+my $TRIPHASIC_REGEX = qr/
+  \s*
+  Failed\stest                  # Beginning Needle
+  (                             # 
+    \s*'(?<test_name>[^']+)'    # Test Name [usually last param in assertion]
+    \n\s*\#\s*                  # eat-up all the remainder
+  )?                            # -- Optional
+  \s*
+  at\s(?<filename>.+)           # Location: File
+  \s*
+  line\s(?<line>\d+)            # Location: Line
+  \.\n
+  (?<context_msg>[\w\W]*)       # Any additional content
+/x;
 
 sub open_test {
   my ($self, $description, $parser) = @_;
