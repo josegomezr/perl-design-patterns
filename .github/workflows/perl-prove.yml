@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Prove"
     container:
-      image: perldocker/perl-tester:5.26
+      image: registry.opensuse.org/home/josegomezr/devel/openqa/ci/containers-tw/base-perl:latest
     steps:
       - uses: actions/checkout@v4
       - run: PERL5LIB=$PWD/t/lib/:$PERL5LIB prove --formatter TAP::Formatter::GitHubAction
