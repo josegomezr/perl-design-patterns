@@ -15,4 +15,5 @@ jobs:
       image: registry.opensuse.org/home/josegomezr/devel/openqa/ci/containers-tw/base-perl:latest
     steps:
       - uses: actions/checkout@v4
-      - run: PERL5LIB=$PWD/t/lib/:$PERL5LIB prove --formatter TAP::Formatter::GitHubAction
+      - run: cpanm --installdeps . --with-develop --notest
+      - run: prove --formatter TAP::Formatter::GitHubActions

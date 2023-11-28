@@ -11,7 +11,7 @@ use PDP::Singleton::Book;
 use PDP::Singleton::Connection;
 
 subtest 'Save' => sub {
-  lives_ok { PDP::Singleton::Connection->reset() } 'Init state';
+  lives_ok { die 1; PDP::Singleton::Connection->reset() } 'Init state';
 
   lives_ok { PDP::Singleton::Connection->save($_) } 'save failed' for (1 .. 6);
   lives_ok { PDP::Singleton::Connection->get_instance->save($_) } 'save failed' for (1 .. 6);
