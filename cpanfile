@@ -2,7 +2,7 @@
 requires 'Storable', '>= 3.06';
 
 on 'test' => sub {
-    requires 'TAP::Formatter::GitHubActions', '>= 0.01';
+    requires 'TAP::Formatter::GitHubActions', '== 0.3.0_2';
     requires 'Test::Most';
     requires 'Test::Warnings';
 };
