@@ -8,22 +8,10 @@ on:
       - 'main'
 
 jobs:
-  perl-lint-checks-v2:
-    runs-on: ubuntu-latest
+  perl-lint-checks:
+    uses: josegomezr/perl-toolkit/.github/workflows/perl-tidyall.yml@main
     name: "Perltidy"
-    container:
-      image: registry.opensuse.org/home/josegomezr/devel/openqa/ci/containers-tw/base-perl:latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: cpanm --installdeps . --with-develop --notest
-      - run: GITHUB_ACTIONS=1 tidyall --check-only --all --quiet
 
   perl-critic-checks:
-    runs-on: ubuntu-latest
+    uses: josegomezr/perl-toolkit/.github/workflows/perl-critic.yml@main
     name: "Perlcritic"
-    container:
-      image: registry.opensuse.org/home/josegomezr/devel/openqa/ci/containers-tw/base-perl:latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: cpanm --installdeps . --with-develop --notest
-      - run: perlcritic --quiet .
