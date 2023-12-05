@@ -8,11 +8,8 @@ on:
       - 'main'
 
 jobs:
-  perl-prove:
-    runs-on: ubuntu-latest
+  prove:
+    uses: josegomezr/perl-toolkit/.github/workflows/perl-prove.yml@main
     name: "Prove"
-    container:
-      image: perldocker/perl-tester:5.26
-    steps:
-      - uses: actions/checkout@v4
-      - run: PERL5LIB=$PWD/t/lib/:$PERL5LIB prove --formatter TAP::Formatter::GitHubAction
+    with:
+      prove-args: '--rc=.proverc.gha'
