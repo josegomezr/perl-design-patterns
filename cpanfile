@@ -11,5 +11,5 @@ on 'develop' => sub {
     requires 'Code::TidyAll';
     requires 'Perl::Critic';
     requires 'Perl::Critic::Community';
-    requires 'Perl::Tidy', '== 20230912';
+    requires 'Perl::Tidy';
 };

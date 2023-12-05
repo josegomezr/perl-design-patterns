@@ -8,12 +8,8 @@ on:
       - 'main'
 
 jobs:
-  perl-prove:
-    runs-on: ubuntu-latest
+  prove:
+    uses: josegomezr/perl-toolkit/.github/workflows/perl-prove.yml@main
     name: "Prove"
-    container:
-      image: registry.opensuse.org/home/josegomezr/devel/openqa/ci/containers-tw/base-perl:latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: cpanm --installdeps . --with-develop --notest
-      - run: prove --formatter TAP::Formatter::GitHubActions
+    with:
+      prove-args: '--rc=.proverc.gha'
