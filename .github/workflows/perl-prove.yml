@@ -9,7 +9,7 @@ on:
 
 jobs:
   prove:
-    uses: josegomezr/perl-toolkit/perl-prove.yml@test_shortcut
+    uses: josegomezr/perl-toolkit/.github/workflows/perl-prove.yml@v1
     name: "Prove"
     with:
       prove-args: '--rc=.proverc.gha'
